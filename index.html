@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>凯域留学 · KY 2010–2013</title>
+<meta name="description" content="凯域留学 Kaiyu Study Abroad, Beijing 2010–2013. A small memorial.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4efe3; --ink:#2f3a2c; --muted:#6f7a64; --accent:#2e6b3f; --card:#fffdf7; --line:#d9d1bd;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#1b201a; --ink:#ece6d6; --muted:#a3ab96; --accent:#8cc49a; --card:#242b23; --line:#3a4237; }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Noto Serif SC","Cormorant Garamond",serif;
+    display:flex; flex-direction:column; align-items:center;
+    padding:32px 16px 24px; min-height:100%;
+  }
+  header{text-align:center; margin-bottom:22px}
+  .logo{font-family:"Cormorant Garamond",serif; font-size:44px; font-weight:500; color:var(--accent); letter-spacing:2px; line-height:1}
+  h1{font-size:22px; font-weight:600; margin-top:6px; letter-spacing:6px}
+  .years{color:var(--muted); font-size:14px; margin-top:6px; letter-spacing:2px}
+
+  .stage{
+    position:relative; width:100%; max-width:960px; aspect-ratio:4/3;
+    border-radius:14px; overflow:hidden; background:var(--card);
+    box-shadow:0 18px 40px rgba(40,50,30,.18); border:1px solid var(--line);
+  }
+  .slide{position:absolute; inset:0; opacity:0; transition:opacity 1.4s ease}
+  .slide.on{opacity:1}
+  .slide img{width:100%; height:100%; object-fit:cover; transform:scale(1.02)}
+  .slide.on img{animation:drift 8s ease-out forwards}
+  @keyframes drift{from{transform:scale(1.02)} to{transform:scale(1.08)}}
+  .cap{
+    position:absolute; left:0; right:0; bottom:0; padding:40px 22px 18px;
+    background:linear-gradient(transparent, rgba(20,25,15,.65)); color:#fbf7ec;
+    font-size:16px; letter-spacing:1px;
+  }
+  .cap small{display:block; font-family:"Cormorant Garamond",serif; font-style:italic; font-size:15px; opacity:.85; margin-top:2px}
+
+  .nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:44px; height:44px; border-radius:50%; border:none; cursor:pointer;
+    background:rgba(255,253,247,.75); color:#2f3a2c; font-size:22px;
+    display:grid; place-items:center; opacity:.0; z-index:5; transition:opacity .3s;
+  }
+  .stage:hover .nav, .nav:focus-visible{opacity:1}
+  @media (hover:none){ .nav{opacity:.8} }
+  .prev{left:12px} .next{right:12px}
+
+  .dots{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap}
+  .dot{width:9px; height:9px; border-radius:50%; background:var(--line); border:none; cursor:pointer; transition:background .3s, transform .3s}
+  .dot.on{background:var(--accent); transform:scale(1.25)}
+
+  .story{max-width:640px; text-align:center; margin-top:28px; line-height:1.9; font-size:15px}
+  .story .en{font-family:"Cormorant Garamond",serif; font-style:italic; font-size:17px; color:var(--muted); margin-top:8px; line-height:1.5}
+  footer{margin-top:auto; padding-top:28px; color:var(--muted); font-size:12px; letter-spacing:1px}
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">KY</div>
+    <h1>凯域留学</h1>
+    <div class="years">北京 · 2010 — 2013</div>
+  </header>
+
+  <div class="stage" id="stage" aria-roledescription="carousel" aria-label="凯域留学老照片">
+    <button class="nav prev" id="prev" aria-label="上一张">‹</button>
+    <button class="nav next" id="next" aria-label="下一张">›</button>
+  </div>
+  <div class="dots" id="dots"></div>
+
+  <section class="story">
+    <p>三年，几百位同学，从这里出发去了美国、英国和加拿大。<br>我们写过的每一份文书，都陪着一个人走向新的地方。</p>
+    <p class="en">Three years, hundreds of students, and every one of them made it.</p>
+  </section>
+
+  <footer>www.kaiyulx.com · back after twenty years</footer>
+
+<script>
+  // 换成吉卜力版本时，只要替换 images/ 里同名的图片即可
+  const slides = [
+    ["images/01.jpg","前台","Where every story began"],
+    ["images/02.jpg","窗外的中关村","The view over Zhongguancun"],
+    ["images/03.jpg","办公区","Our workroom"],
+    ["images/04.jpg","写文书的工位","Where the personal statements were written"],
+    ["images/05.jpg","会议室","The meeting room"],
+    ["images/06.jpg","靠窗的会议桌","A table by the window"],
+    ["images/07.jpg","咨询室","Talking through the choices"],
+    ["images/08.jpg","办公室一角","A quiet corner"],
+    ["images/09.jpg","办公桌","The desk"],
+    ["images/10.jpg","开业时收到的花","Plants from opening day"],
+    ["images/11.jpg","等候区","The waiting sofa"]
+  ];
+  const stage = document.getElementById('stage'), dotsBox = document.getElementById('dots');
+  const els = slides.map(([src,zh,en],i)=>{
+    const d = document.createElement('div'); d.className='slide';
+    d.innerHTML = `<img src="${src}" alt="${zh}" ${i>1?'loading="lazy"':''}><div class="cap">${zh}<small>${en}</small></div>`;
+    stage.appendChild(d);
+    const b = document.createElement('button'); b.className='dot'; b.setAttribute('aria-label',`第 ${i+1} 张`);
+    b.onclick = ()=>{ go(i); restart(); }; dotsBox.appendChild(b);
+    return d;
+  });
+  let cur = 0, timer = null, paused = false;
+  const DELAY = 6000;
+  function go(i){
+    els[cur].classList.remove('on'); dotsBox.children[cur].classList.remove('on');
+    cur = (i + els.length) % els.length;
+    els[cur].classList.add('on'); dotsBox.children[cur].classList.add('on');
+  }
+  function restart(){ clearInterval(timer); if(!paused) timer = setInterval(()=>go(cur+1), DELAY); }
+  document.getElementById('prev').onclick = ()=>{ go(cur-1); restart(); };
+  document.getElementById('next').onclick = ()=>{ go(cur+1); restart(); };
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowLeft'){ go(cur-1); restart(); }
+    if(e.key==='ArrowRight'){ go(cur+1); restart(); }
+  });
+  stage.addEventListener('mouseenter', ()=>{ paused=true; clearInterval(timer); });
+  stage.addEventListener('mouseleave', ()=>{ paused=false; restart(); });
+  let x0 = null;
+  stage.addEventListener('touchstart', e=>{ x0 = e.touches[0].clientX; }, {passive:true});
+  stage.addEventListener('touchend', e=>{
+    if(x0===null) return; const dx = e.changedTouches[0].clientX - x0;
+    if(Math.abs(dx) > 40){ go(dx<0 ? cur+1 : cur-1); restart(); } x0 = null;
+  });
+  go(0); restart();
+</script>
+</body>
+</html>
